@@ -7,6 +7,7 @@ import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import NoSuchElementException
 
 class FlipkartScraper:
     def __init__(self, output_dir="data"):
@@ -62,7 +63,11 @@ class FlipkartScraper:
         options = uc.ChromeOptions()
         driver = uc.Chrome(options=options,use_subprocess=True)
         search_url = f"https://www.flipkart.com/search?q={query.replace(' ', '+')}"
-        driver.get(search_url)
+        try:
+            driver.get(search_url)
+        except NoSuchElementException:
+            driver = uc.Chrome()
+            driver.get(search_url)
         time.sleep(4)
 
         try:
